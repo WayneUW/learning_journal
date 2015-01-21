@@ -1,5 +1,7 @@
 import datetime
 
+from cryptacular.bcrypt import BCRYPTPasswordManager as Manager    # import but bind to a different symbol
+
 from sqlalchemy import (
     Column,
     DateTime,
@@ -59,15 +61,23 @@ class Entry( Base ):
         return session.query(cls).get(id)    # is the return for DBSession or just session?
 
 
-# class User(Base):
-#     __tablename__ = 'users'
-#     id = Column(Integer, primary_key=True, autoincrement=True)
-#     name = Column(Unicode(255), unique=True, nullable=False)
-#     password = Column(Unicode(255), nullable=False)
+class User(Base):
+    __tablename__ = 'users'
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    name = Column(Unicode(255), unique=True, nullable=False)
+    password = Column(Unicode(255), nullable=False)
+    
+    @classmethod
+    def by_name(cls, name, session=None):
+        if session is None:
+            session = DBSession
+        return DBSession.query(User).filter(cls.name == name).first()    # looking for a name, take the first one and hand it back to ourselves
+    
+    def verify_password(self, password):
+        manager = Manager()
+        return manager.check(self.password, password)
 
-#     @classmethod
-#     def by_name(cls, name):
-#       return DBSession.query(User).filter(User.name == name).first()
+    
 
 
 """

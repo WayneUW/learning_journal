@@ -1,5 +1,8 @@
 from pyramid.config import Configurator
 from sqlalchemy import engine_from_config
+from pyramid.authentication import AuthTktAuthenticationPolicy
+from pyramid.authorization import ACLAuthorizationPolicy
+from .security import EntryFactory
 
 from .models import (
     DBSession,
@@ -13,11 +16,17 @@ def main(global_config, **settings):
     engine = engine_from_config(settings, 'sqlalchemy.')
     DBSession.configure(bind=engine)
     Base.metadata.bind = engine
-    config = Configurator(settings=settings)
+    config = Configurator(
+        settings=settings,
+        authentication_policy=AuthTktAuthenticationPolicy('somesecret'),    # the somesecret is the key to the castle
+        authorization_policy=ACLAuthorizationPolicy(),
+        default_permission='view'
+        )
     config.include('pyramid_jinja2')    # changed from 'pyramid_chameleon'
     config.add_static_view('static', 'static', cache_max_age=3600)
-    config.add_route('home', '/')    # the route order makes a difference. Go from more detail to less
-    config.add_route('detail', '/journal/{id:\d+}')
-    config.add_route('action', '/journal/{action}')
+    config.add_route('home', '/', factory=EntryFactory)    # the route order makes a difference. Go from more detail to less
+    config.add_route('detail', '/journal/{id:\d+}', factory=EntryFactory)
+    config.add_route('action', '/journal/{action}', factory=EntryFactory)
+    config.add_route('auth', '/sign/{action}', factory=EntryFactory)
     config.scan()
     return config.make_wsgi_app()
