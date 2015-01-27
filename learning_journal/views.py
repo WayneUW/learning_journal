@@ -32,11 +32,10 @@ from .forms import (    # added for Session2 homework
 #     except DBAPIError:
 #         return Response(conn_err_msg, content_type='text/plain', status_int=500)
 #     return {'one': one, 'project': 'learning_journal'}
-
+# @view_config(route_name='auth', match_param='action=out', renderer='string')
 
 @view_config(route_name='auth', match_param='action=in', renderer='string',
             request_method='POST')
-@view_config(route_name='auth', match_param='action=out', renderer='string')
 
 def sign_in(request):
     login_form = None
