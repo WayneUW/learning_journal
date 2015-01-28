@@ -24,7 +24,8 @@ from .forms import (    # added for Session2 homework
     LoginForm   
 )
 
-
+import logging
+logger = logging.getLogger("views.py")
 # @view_config(route_name='home', renderer='templates/mytemplate.pt')
 # def my_view(request):
 #     try:
@@ -55,7 +56,8 @@ def sign_in(request):
 # @view_config( route_name='home', renderer='string' )   # original swapped for 3rd edit. String is the default renderer
 @view_config(route_name='home', renderer='templates/list.jinja2')    # 3rd edit
 def index_page(request):    # no change
-    entries = Entry.all()    # 2nd edit
+    entries = []#Entry.all()    # 2nd edit
+    logger.debug(DBSession.bind)
     form = None
     if not authenticated_userid(request):
         form = LoginForm()
