@@ -57,7 +57,7 @@ def sign_in(request):
 @view_config(route_name='home', renderer='templates/list.jinja2')    # 3rd edit
 def index_page(request):    # no change
     entries = []#Entry.all()    # 2nd edit
-    logger.debug(DBSession.bind)
+    print DBSession.bind
     form = None
     if not authenticated_userid(request):
         form = LoginForm()
