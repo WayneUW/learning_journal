@@ -15,7 +15,7 @@ def main(global_config, **settings):
     """ This function returns a Pyramid WSGI application.
     """
     if 'DATABASE_URL' in os.environ:
-        settings['sqlachemy.url'] = os.environ['DATABASE_URL']
+        settings['sqlalchemy.url'] = os.environ['DATABASE_URL']
     engine = engine_from_config(settings, 'sqlalchemy.')
     DBSession.configure(bind=engine)
     Base.metadata.bind = engine
