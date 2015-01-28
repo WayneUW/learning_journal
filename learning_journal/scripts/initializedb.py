@@ -45,9 +45,9 @@ def main(argv=sys.argv):
         # manager = Manager()
         # password = manager.encode(u'admin')
         # admin = User(name=u'admin', password=password)
-        # DBSession.add(admin)
+
         manager = Manager()
         password = os.environ.get('ADMIN_PASSWORD', u'admin')
         password = manager.encode(password)
         admin = User(name=u'admin', password=password)
-
+        DBSession.add(admin)
